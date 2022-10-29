@@ -1,0 +1,326 @@
+<!--ESP32 Sporttool-->>
+
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>ESP IOT DASHBOARD</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap');
+  </style>
+  <div id="OverAll" onclick="FadeOut(); RestartTimer(-3) "></span><br><span id="goal" class="GoalDone">Zeit
+      geschafft</span></div>
+
+  <div class="topnav">
+    <h1>SportTracker</h1>
+  </div>
+  <h2 style="margin: 10px !important">Zieleinstellungen</h2>
+  <div class="content">
+    <div  style="border-radius: 50%;">
+      <div id="dot">
+        <div class="middle" style="transform: translate(0,199px);"></div>
+        <div class="middle" style="transform: translate(0,199px) rotate(90deg); height: 0px;"></div>
+        <div class="Arrow" id="PfeilUp1" style="left: 193px;
+        top: 17px; transform: rotate(45deg);"></div>
+        <div class="Arrow" id="PfeilUp2" style="left: 157px;
+         top: 16px; transform: rotate(-45deg);"></div>
+
+
+        <div class="Arrow" id="PfeilLeft1" style="left: -8px;
+      top: 179px; transform: rotate(-45deg); visibility: hidden"></div>
+        <div class="Arrow" id="PfeilLeft2" style="left: -7px;
+      top: 210px; transform: rotate(45deg); visibility: hidden;"></div>
+        <div id="pitch"></div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+    <div class="card" style="float: left; margin-left: 25px;">
+      <p class="card-title" style="margin-bottom: 15px;">Daten</p>
+      <p class="state" style="margin: 0px;">Rotation Bretts: <span id="Rot">Nicht kalibriert</span>
+      <!--  <p class="state" style="margin: 0px;">Rotation: <span id="YRotation">n.A.</span>-->
+      <!--    <p class="state" style="margin: 0px;">Rotation Stehfl&auml;che: <span id="YRotationCalib">Nicht kalibriert</span>
+      </p> -->
+      
+      <button onclick="changeRotate()" class="button-87" role="button">Wasserwaage rotieren</button>
+      </p>
+      <span class="state" style="margin: 0px;" id="TimerName">Sekunden: </span><span id="Seconds"
+        style="font-weight: bold;">0</span><br>
+      <button onclick="RestartTimer(-2)" style="margin-bottom: 50px;" class="button-87" role="button">Timer
+        zur&uuml;cksetzen</button>
+    </div>
+
+    <div class="card" style="float: right; margin-right: 25px;">
+      <p class="card-title">Einstellungen</p>
+      <p class="switch">
+        <input type="range" onchange="updateSliderPWM(this);" id="slider3" min="0" max="180" step="5" value="0"
+          oninput="sliderValue3.value=slider3.value" class="slider">
+      </p>
+      <p class="state">Eingestellte Dauer: <output id="sliderValue3" for="slider3">0</output></p>
+
+      <button onclick="calibMinFunction()" class="button-87" role="button">
+        <p class="state" style="margin: 0px;">Kalibrierung. Links: <span id="CalibMinNum">Kalibrieren</span><span
+            id="StepsLeft"></span>
+        </p>
+      </button>
+      <button onclick="calibMaxFunction()" class="button-87" role="button" style="margin-bottom: 50px; margin-top: 15px;">
+        <p class="state" style="margin: 0px;">Kalibrierung. Rechts: <span id="CalibMaxNum">Kalibrieren</span><span
+            id="StepsLeft"></span>
+        </p>
+      </button>
+     <!-- <button onclick="calibY()" class="button-87" role="button">
+        <p class="state" style="margin: 0px;">Kalibrierung Stehfl&auml;che: <span id="CalibYNum">Kalibrieren</span><span
+            id="StepsLeft"></span>
+        </p>
+      </button>
+    -->
+    </div>
+
+
+  
+  </div>
+
+
+
+  <h2>Ausdauergraphen</h2>
+  <div id="chart-steps" class="container" style="margin-bottom: 30px;"></div>
+  <div style="margin-bottom: 30px;"><h2>Tutorial:</h2>
+  <h3>Kalibrierung</h3>
+  <p class="Tutorial">Schritt 1: Auf die linke Fl&auml;che stehen und w&auml;hrenddessen auf den Button "Kalibrierung Links" dr&uuml;cken.</p>
+  <p class="Tutorial">Schritt 2: Das gleiche f&uuml;r die rechte Fl&auml;che machen.</p>
+  <p class="Tutorial">Schritt 3: Das Brett gerade ausrichten. Anschlie&szlig;end auf den Schalter "Kalibrierung Stehfl&auml;che" dr&uuml;cken.</p>
+  <h3>Andere Buttons</h3>
+  <p class="Tutorial">Timer einstellen: Jetzt kann, falls gew&uuml;nscht, der Timer eingestellt werden. <br>Nachdem der Time vorbei ist, wird dies angezeigt. Durch das klicken auf den Bildschirm wird der Timer neu gestartet.</p>
+  <p class="Tutorial">Sportger&auml;t um 90 Grad nach links gedreht: Falls die Fl&auml;che rotiert wurde, kann durch den Button die Ausrichtung der Visualisierung um 90 Grad gedreht werden.<br>Anschlie&szlig;end wird empfohlen den Timer &uuml;ber den Button neu zu starten.</p> 
+  <h3>Hinweise:</h3>
+  <p class="Tutorial">Da Sensoren von Grund aus immer rauschen und sich über lange Dauer dadurch die Werte ver&auml;ndern, wird empfohlen, nach einer Weile immer mal wieder die Stehfl&auml;che neu zu kalibrieren.</p>
+  </div>
+  <script src="script.js"></script>
+  <script src="highcharts.js"></script>
+
+
+
+
+</body>
+<footer style="margin-top: 40px;">
+
+  <div id="MadeByDiv">
+    <p id="MadeBy">Made by: Ron Metzger - Version Nr. 1.10 - Revisions: 1 - Date: 29.10.2022</p>
+  </div>
+</footer>
+
+
+<script>
+  //NUR CHART DINGE
+  var chartSteps = new Highcharts.Chart({
+    chart: { renderTo: 'chart-steps' },
+    title: { text: 'Schrittverlauf' },
+    series: [{
+      showInLegend: false,
+      data: []
+    }],
+    plotOptions: {
+      line: {
+        animation: false,
+        dataLabels: { enabled: true }
+      },
+      series: { color: '#059e8a' }
+    },
+    xAxis: {
+      type: 'datetime',
+      dateTimeLabelFormats: { second: '%H:%M:%S' }
+    },
+    yAxis: {
+      title: { text: 'Schritte' }
+      //title: { text: 'Temperature (Fahrenheit)' }
+    },
+    credits: { enabled: false }
+  });
+
+
+  var i = 0;
+  var stepsDone = false;
+  var Min ;
+  var Max ;
+
+  var rotate = false;
+  function changeRotate() {
+    if (rotate) {
+      rotate = false;
+      document.getElementById("PfeilLeft1").style.visibility = "hidden";
+      document.getElementById("PfeilLeft2").style.visibility = "hidden";
+      document.getElementById("PfeilUp1").style.visibility = "visible";
+      document.getElementById("PfeilUp2").style.visibility = "visible";
+
+    } else {
+      rotate = true;
+      document.getElementById("PfeilUp1").style.visibility = "hidden";
+      document.getElementById("PfeilUp2").style.visibility = "hidden";
+      document.getElementById("PfeilLeft1").style.visibility = "visible";
+      document.getElementById("PfeilLeft2").style.visibility = "visible";
+    }
+  }
+
+var stringData;
+var PositionToMove = 183;
+var y;
+var yReal;
+var calibDone = false;
+var xRange;
+var calibYValue;
+setInterval(function () {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function () {
+    if (this.readyState == 4 && this.status == 200) {
+      var z = (new Date()).getTime(),
+        x = parseFloat(this.responseText);
+                                //war mal: (x, Min, 0, -PositionToMove, 0);
+        if (x < 0) { xRange = map_range(x, Min, 0, -PositionToMove, 0); } else { xRange = map_range(x, 0, Max, 0, PositionToMove); }
+        //y = map_range(y, Min, Max, -90, 90);
+        var posX = 183 + xRange; //die 183 sind die Pos des Dots
+        var posY = 176 + 0; // war mal 133+y, aber weil pitch weg-gepatcht wurde, nur +0
+        if (!rotate) {
+          stringData = "translate(" + String(posX) + "px," + String(posY) + "px)";
+        }
+        else {
+          stringData = "translate(" + String(posY) + "px," + String(posX) + "px)";
+        }
+        document.getElementById("pitch").style.transform = stringData;
+        document.getElementById("Rot").innerHTML =  Math.round((x * 10))/10;
+        if (i != 50) { i += 1; }
+        else {
+          i = 0;
+          //console.log(this.responseText);
+          if (chartSteps.series[0].data.length > 720) {
+            chartSteps.series[0].addPoint([z, Math.round(x)], true, true, true);
+          } else {
+            chartSteps.series[0].addPoint([z, Math.round(x)], true, false, true);
+          }
+        }
+      
+    }
+  };
+  xhttp.open("GET", "/stepsStatistic", true);
+  xhttp.send();
+}, 50);
+
+  // Das ist der Yaw, der rausgepatcht wurde in V1.10 Alle Buttons und sonstiges sind damit auch verschwunden.
+ //setInterval(function () {
+ //  var xhttp = new XMLHttpRequest();
+ //  xhttp.onreadystatechange = function () {
+ //    if (this.readyState == 4 && this.status == 200) {
+ //      yReal = parseFloat(this.responseText)-180;
+ //      y = yReal - calibYValue;
+ //      if(y > 180){ y = y-360; }
+ //      if(y < -180 ) {y = y+360; }
+ //      y = Math.round(map_range(y,-180,180,-130,130));
+ //        //document.getElementById("YRotation").innerHTML =Math.round(yReal);
+ //        if(calibYValue!=null){document.getElementById("YRotationCalib").innerHTML =Math.round(map_range(y,-130,130,-180,180));}
+ //    }
+ //  };
+ //  xhttp.open("GET", "/yaw", true);
+ //  xhttp.send();
+ //}, 100);
+
+
+ function calibY(){
+  calibYValue = yReal; // -  den Value abrechnen bei Y. Wenn unter -180 oder drüber, dann aufrechnen.
+  document.getElementById("CalibYNum").innerHTML = Math.round(calibYValue);
+}
+
+  function map_range(value, low1, high1, low2, high2) {
+    return low2 + (high2 - low2) * (value - low1) / (high1 - low1);
+  }
+
+
+ var CalibMin = false;
+ var calibMax = false;
+ function calibMinFunction() {
+
+   Min = document.getElementById("Rot").innerHTML;
+   document.getElementById("CalibMinNum").innerHTML = Min;
+   CalibMin = true;
+   if (CalibMin && CalibMax) { calibDone = true; }
+ } 
+   function calibMaxFunction(){
+   Max = document.getElementById("Rot").innerHTML;
+   document.getElementById("CalibMaxNum").innerHTML = Max;
+   CalibMax = true;
+   if (CalibMin && CalibMax) { calibDone = true; }
+ }
+
+
+
+  //var chartRotations = new Highcharts.Chart({
+  //  chart: { renderTo: 'chart-rotations' },
+  //  title: { text: 'Rotationsverlauf' },
+  //  series: [{
+  //    showInLegend: false,
+  //    data: []
+  //  }],
+  //  plotOptions: {
+  //    line: {
+  //      animation: false,
+  //      dataLabels: { enabled: true }
+  //    },
+  //    series: { color: '#059e8a' }
+  //  },
+  //  xAxis: {
+  //    type: 'datetime',
+  //    dateTimeLabelFormats: { second: '%H:%M:%S' }
+  //  },
+  //  yAxis: {
+  //    title: { text: 'Rotationen' }
+  //    //title: { text: 'Temperature (Fahrenheit)' }
+  //  },
+  //  credits: { enabled: false }
+  //});
+  //var j = 0;
+  //var rotDone = false;
+  //setInterval(function () {
+  //  var xhttp = new XMLHttpRequest();
+  //  xhttp.onreadystatechange = function () {
+  //    if (this.readyState == 4 && this.status == 200) {
+  //      var x = (new Date()).getTime(),
+  //        y = parseFloat(this.responseText);
+  //      if (document.getElementById("slider2").value == 0) {
+  //        document.getElementById("RotsCalc").innerHTML = "Drehungen: ";
+  //        document.getElementById("RotationsLeft").innerHTML = this.responseText;
+  //      }
+  //      else {
+  //        document.getElementById("RotsCalc").innerHTML = "Drehungen &uuml;brig: ";
+  //        document.getElementById("RotationsLeft").innerHTML = document.getElementById("slider2").value - this.responseText;
+  //        if (document.getElementById("slider2").value - this.responseText < 1 && rotDone == false) {
+  //          FadeIn();
+  //          rotDone = true;
+  //          console.log("FadeIn Animation");
+  //          document.getElementById("goal").innerHTML = "Rotationen erreicht!";
+  //        }
+  //      }
+  //      //console.log(this.responseText);
+  //      if (j != 20) { j += 1; } else {
+  //        j = 0;
+  //        if (chartRotations.series[0].data.length > 720) {
+  //          chartRotations.series[0].addPoint([x, y], true, true, true);
+  //        } else {
+  //          chartRotations.series[0].addPoint([x, y], true, false, true);
+  //        }
+  //      }
+  //    }
+  //  };
+  //  xhttp.open("GET", "/rotationStatistic", true);
+  //  xhttp.send();
+  //}, 100);
+</script>
+
+</html>
